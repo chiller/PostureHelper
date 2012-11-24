@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string-array name="averageRange">
+    <item>5</item>
+    <item>15</item>
+    <item>20</item>
+    <item>25</item> 
+</string-array>
+<string-array name="averageRangeValues">
+    <item>5</item>
+    <item>15</item>
+    <item>20</item>
+    <item>25</item>
+</string-array>
+</resources>

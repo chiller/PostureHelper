@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+        <PreferenceCategory
+                android:title="Personal">
+           
+			<ListPreference
+			        android:title="Average Range"
+			        android:summary="Number of samples to average on"
+			        android:key="averageRange"
+			        android:defaultValue="10"
+			        android:entries="@array/averageRange"
+			        android:entryValues="@array/averageRangeValues" />
+        </PreferenceCategory>
+
+</PreferenceScreen>
