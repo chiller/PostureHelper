@@ -2,21 +2,22 @@ package com.chiller.bme.posture;
 
 import java.text.DecimalFormat;
 
-import com.chiller.bme.posture.util.MovingAverage;
-
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
 import android.hardware.SensorListener;
 import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.chiller.bme.posture.db.SessionDAO;
+import com.chiller.bme.posture.db.SessionRecord;
+import com.chiller.bme.posture.util.MovingAverage;
 
 public class PostureService extends Service implements SensorListener{
 	private float calibrated_angle;
@@ -24,30 +25,45 @@ public class PostureService extends Service implements SensorListener{
 	private MovingAverage average;
 	private int count;
 	private MediaPlayer mp;
+	
+	private SessionDAO datasource;
+	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// TODO Auto-generated method stub
 		
 		super.onStartCommand(intent, flags, startId);
 		
+		
+		//Get data from calibration activity
 		Bundle Extras = intent.getExtras();
 		Log.i("PostureService", String.valueOf(Extras.getFloat("calibrated_angle")));
 		calibrated_angle = Extras.getFloat("calibrated_angle");
 		Log.i("PostureService", "Service started");
 	    
+		//Register for sensor notifications
 		sm = (SensorManager) getSystemService(SENSOR_SERVICE);
 		sm.registerListener(this, 
                 SensorManager.SENSOR_ORIENTATION,
                 SensorManager.SENSOR_DELAY_NORMAL);
 		
-		
+		//Instantiate averaging algorithm
 		average = new MovingAverage(15);
 		count = 0;
 		
-		
+		//Instantiate sound player
 		mp = MediaPlayer.create(PostureService.this, R.raw.timbale);   
         
-		
+		//Instantiate database
+		datasource = new SessionDAO(this);
+	    datasource.open();
+	    
+	    /*
+	    for (SessionRecord r: datasource.getAllRecords()){
+	    	Log.i("PostureService",r.toString());
+	    	
+	    } */
+	   
 		return START_STICKY;
 	}
 
@@ -65,7 +81,7 @@ public class PostureService extends Service implements SensorListener{
 		mp.release();
 		Log.i("PostureService", "Service stopped");
 		Toast.makeText(getApplicationContext(), "Service Stopped", Toast.LENGTH_SHORT).show(); 
-    	
+    	datasource.close();
 	}
 
 
@@ -100,6 +116,8 @@ public class PostureService extends Service implements SensorListener{
                 
       
         }
+            
+            datasource.createRecord(String.valueOf(values[1]));
 	}
 	}
 	
