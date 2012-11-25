@@ -2,20 +2,21 @@ package com.chiller.bme.posture;
 
 
 
-import junit.framework.Test;
 import android.app.Activity;
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
+
+import com.chiller.bme.posture.tasks.AsyncTaskPostStats;
+import com.chiller.bme.posture.tasks.AsyncTaskPostStats.UploadVoteCompleteListener;
 
 
-public class MainActivity extends Activity{
+public class MainActivity extends Activity implements UploadVoteCompleteListener{
 	
 	public static int count;
 	public static float calibrated_angle;
@@ -54,6 +55,16 @@ public class MainActivity extends Activity{
 	        
 	        Intent intent = new Intent(MainActivity.this, PostureService.class);
 	        getApplicationContext().stopService(intent);
+	        
+	        
+	        
+	        /*AsyncTaskPostStats getImagesTask =
+	        	    new AsyncTaskPostStats(MainActivity.this, MainActivity.this);
+	        	getImagesTask.execute(
+	        	    "http://vinyltentacles.appspot.com/"+
+	        	    "?action=getImages"); */
+	        
+	        
 	      }
 	    });
 	
@@ -74,6 +85,18 @@ public class MainActivity extends Activity{
 	        startActivity(settingsActivity);
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onTaskComplete(String aResult) {
+		// TODO Auto-generated method stub
+		Log.i("PostureService", "AsyncTask Finished: " + aResult);
+	}
+
+	@Override
+	public void onError(String aError) {
+		// TODO Auto-generated method stub
+		Log.i("PostureService", "AsyncTask Finished with Error: "+ aError);
 	}
 
 }
