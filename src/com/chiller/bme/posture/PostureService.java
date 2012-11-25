@@ -113,7 +113,7 @@ public class PostureService extends Service implements SensorListener{
       
         }
             
-            datasource.createRecord(String.valueOf(values[1]));
+            datasource.createRecord(String.valueOf(values[1]),"EVENT");
 	}
 	}
 	

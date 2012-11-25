@@ -3,7 +3,10 @@ package com.chiller.bme.posture.db;
 public class SessionRecord {
 	  private long id;
 	  private String userid;
-
+	  private String timestamp;
+	  private String event;
+	  private boolean synced;
+	  
 	  public long getId() {
 	    return id;
 	  }
@@ -12,17 +15,33 @@ public class SessionRecord {
 	    this.id = id;
 	  }
 
-	  public String getComment() {
+	  public String getRecord() {
 	    return userid;
 	  }
 
-	  public void setComment(String comment) {
-	    this.userid = comment;
+	  public void setRecord(String record) {
+	    this.userid = record;
 	  }
 
 	  // Will be used by the ArrayAdapter in the ListView
 	  @Override
 	  public String toString() {
-	    return userid;
+	    return userid+ " "+ timestamp+ " " + event + " "+ synced;
 	  }
+
+	  public void setTimestamp(String timestamp) {
+			// TODO Auto-generated method stub
+		this.timestamp = timestamp;
+	  }
+
+	  public void setEvent(String event) {
+		// TODO Auto-generated method stub
+		  this.event = event;
+		
+	  }
+
+	public void setSynced(String string) {
+		// TODO Auto-generated method stub
+		this.synced = Boolean.parseBoolean(string);
+	}
 	} 

@@ -16,7 +16,10 @@ public class SessionDAO {
   private SQLiteDatabase database;
   private PostureSQLiteHelper dbHelper;
   private String[] allColumns = { PostureSQLiteHelper.COLUMN_ID,
-		  PostureSQLiteHelper.COLUMN_USER };
+		  PostureSQLiteHelper.COLUMN_USER,
+		  PostureSQLiteHelper.COLUMN_TS,
+		  PostureSQLiteHelper.COLUMN_EVENT,
+		  PostureSQLiteHelper.COLUMN_SYNCED};
 
   public SessionDAO(Context context) {
     dbHelper = new PostureSQLiteHelper(context);
@@ -31,9 +34,16 @@ public class SessionDAO {
     dbHelper.close();
   }
 
-  public SessionRecord createRecord(String record) {
+  public SessionRecord createRecord(String record, String event) {
     ContentValues values = new ContentValues();
+    
+    Long tsLong = System.currentTimeMillis()/1000;
+    String ts = tsLong.toString();
+    
     values.put(PostureSQLiteHelper.COLUMN_USER, record);
+    values.put(PostureSQLiteHelper.COLUMN_TS, ts);
+    values.put(PostureSQLiteHelper.COLUMN_EVENT, event);
+    values.put(PostureSQLiteHelper.COLUMN_SYNCED, "false");
     long insertId = database.insert(PostureSQLiteHelper.TABLE_SESSIONS, null,
         values);
     Cursor cursor = database.query(PostureSQLiteHelper.TABLE_SESSIONS,
@@ -70,10 +80,13 @@ public class SessionDAO {
   }
 
   private SessionRecord cursorToRecord(Cursor cursor) {
-    SessionRecord comment = new SessionRecord();
-    comment.setId(cursor.getLong(0));
-    comment.setComment(cursor.getString(1));
-    return comment;
+    SessionRecord record = new SessionRecord();
+    record.setId(cursor.getLong(0));
+    record.setRecord(cursor.getString(1));
+    record.setTimestamp(cursor.getString(2));
+    record.setEvent(cursor.getString(3));
+    record.setSynced(cursor.getString(4));
+    return record;
   }
 
   public void deleteAllRecords() {
