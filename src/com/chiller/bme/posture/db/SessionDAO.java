@@ -16,10 +16,12 @@ public class SessionDAO {
   private SQLiteDatabase database;
   private PostureSQLiteHelper dbHelper;
   private String[] allColumns = { PostureSQLiteHelper.COLUMN_ID,
-		  PostureSQLiteHelper.COLUMN_USER,
+		  PostureSQLiteHelper.COLUMN_DATA,
 		  PostureSQLiteHelper.COLUMN_TS,
 		  PostureSQLiteHelper.COLUMN_EVENT,
-		  PostureSQLiteHelper.COLUMN_SYNCED};
+		  PostureSQLiteHelper.COLUMN_SYNCED,
+		  PostureSQLiteHelper.COLUMN_USER
+		  };
 
   public SessionDAO(Context context) {
     dbHelper = new PostureSQLiteHelper(context);
@@ -40,10 +42,12 @@ public class SessionDAO {
     Long tsLong = System.currentTimeMillis()/1000;
     String ts = tsLong.toString();
     
-    values.put(PostureSQLiteHelper.COLUMN_USER, record);
+    values.put(PostureSQLiteHelper.COLUMN_DATA, record);
     values.put(PostureSQLiteHelper.COLUMN_TS, ts);
     values.put(PostureSQLiteHelper.COLUMN_EVENT, event);
     values.put(PostureSQLiteHelper.COLUMN_SYNCED, "false");
+
+    values.put(PostureSQLiteHelper.COLUMN_USER, "Endre");
     long insertId = database.insert(PostureSQLiteHelper.TABLE_SESSIONS, null,
         values);
     Cursor cursor = database.query(PostureSQLiteHelper.TABLE_SESSIONS,
@@ -86,6 +90,7 @@ public class SessionDAO {
     record.setTimestamp(cursor.getString(2));
     record.setEvent(cursor.getString(3));
     record.setSynced(cursor.getString(4));
+    record.setUsername(cursor.getString(5));
     return record;
   }
 

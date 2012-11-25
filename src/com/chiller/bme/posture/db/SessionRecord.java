@@ -6,6 +6,7 @@ public class SessionRecord {
 	  private String timestamp;
 	  private String event;
 	  private boolean synced;
+	  private String username;
 	  
 	  public long getId() {
 	    return id;
@@ -26,7 +27,7 @@ public class SessionRecord {
 	  // Will be used by the ArrayAdapter in the ListView
 	  @Override
 	  public String toString() {
-	    return userid+ " "+ timestamp+ " " + event + " "+ synced;
+	    return userid+ " "+ timestamp+ " " + event + " "+ synced+ " " + username;
 	  }
 
 	  public void setTimestamp(String timestamp) {
@@ -43,5 +44,10 @@ public class SessionRecord {
 	public void setSynced(String string) {
 		// TODO Auto-generated method stub
 		this.synced = Boolean.parseBoolean(string);
+	}
+
+	public void setUsername(String username) {
+		// TODO Auto-generated method stub
+		this.username = username;
 	}
 	} 
