@@ -12,9 +12,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.chiller.bme.posture.db.PostureSQLiteHelper;
 import com.chiller.bme.posture.db.SessionDAO;
 import com.chiller.bme.posture.db.SessionRecord;
+import com.chiller.bme.posture.tasks.AsyncTaskPostStats;
 import com.chiller.bme.posture.tasks.AsyncTaskPostStats.UploadVoteCompleteListener;
 
 
@@ -66,13 +66,26 @@ public class MainActivity extends Activity implements UploadVoteCompleteListener
 	        
 	        
 	        
-	        /*AsyncTaskPostStats getImagesTask =
-	        	    new AsyncTaskPostStats(MainActivity.this, MainActivity.this);
-	        	getImagesTask.execute(
-	        	    "http://vinyltentacles.appspot.com/"+
-	        	    "?action=getImages"); */
+	       
 	        
 	        
+	      }
+	    });
+	    
+	    //Button3
+	    Button syncButton = (Button)findViewById(R.id.button3);
+
+	    syncButton.setOnClickListener(new View.OnClickListener() {
+
+	      @Override
+	      public void onClick(View view) {
+	        
+	    	AsyncTaskPostStats getImagesTask =
+      	    new AsyncTaskPostStats(MainActivity.this, MainActivity.this);
+      		getImagesTask.execute(
+      	    "http://vinyltentacles.appspot.com/"+
+      	    "?action=getImages"); 
+	      
 	      }
 	    });
 	

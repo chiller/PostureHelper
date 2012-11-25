@@ -21,4 +21,6 @@
     <string name="itemPreferences">Preferences</string>
     <string name="clearDatabase">Clear database</string>
     <string name="dumpDatabase">Dump database</string>
+    <string name="stopservice">Stop Service</string>
+    <string name="sync">Sync</string>
 </resources>
