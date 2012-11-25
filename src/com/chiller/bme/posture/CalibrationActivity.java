@@ -26,7 +26,7 @@ public class CalibrationActivity extends Activity implements SensorListener {
     private long lastchange;
     private float current_calibrated_angle;
 	private TextView yViewOavg;
-    
+    private boolean started;
 
     /** Called when the activity is first created. */
     @Override
@@ -45,6 +45,7 @@ public class CalibrationActivity extends Activity implements SensorListener {
         average = new MovingAverage(15);
         lastchange = System.currentTimeMillis();
         current_calibrated_angle = 0;
+        started = false;
     }
     public void onSensorChanged(int sensor, float[] values) {
         synchronized (this) {
@@ -70,12 +71,15 @@ public class CalibrationActivity extends Activity implements SensorListener {
         	         
         	        v.vibrate(300); 
         	        
+        	        if (!started){
         	        
-        	        Intent serviceintent = new Intent(getApplicationContext(), PostureService.class);
-        	        serviceintent.putExtra("calibrated_angle", current_calibrated_angle);
-        	        this.getApplicationContext().startService(serviceintent);
-        	        
+        	        	Intent serviceintent = new Intent(getApplicationContext(), PostureService.class);
+        	        	serviceintent.putExtra("calibrated_angle", current_calibrated_angle);
+        	        	this.getApplicationContext().startService(serviceintent);
+        	        	started = true;
+        	        }
         	        finish();
+        	        
                 }
                 
                 
