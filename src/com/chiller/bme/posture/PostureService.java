@@ -15,6 +15,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.chiller.bme.posture.db.PostureSQLiteHelper;
 import com.chiller.bme.posture.db.SessionDAO;
 import com.chiller.bme.posture.db.SessionRecord;
 import com.chiller.bme.posture.util.MovingAverage;
@@ -25,8 +26,10 @@ public class PostureService extends Service implements SensorListener{
 	private MovingAverage average;
 	private int count;
 	private MediaPlayer mp;
-	
+	private boolean posture_state;
 	private SessionDAO datasource;
+	
+	
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
@@ -59,7 +62,10 @@ public class PostureService extends Service implements SensorListener{
 	    datasource.open();
 	    
 
-	   
+	    datasource.createRecord(String.valueOf(Extras.getFloat("calibrated_angle")) , MainActivity.events[0]);
+	    posture_state = true;
+	    datasource.createRecord(String.valueOf(Extras.getFloat("calibrated_angle")) , MainActivity.events[2]);
+	    
 		return START_STICKY;
 	}
 
@@ -77,7 +83,10 @@ public class PostureService extends Service implements SensorListener{
 		mp.release();
 		Log.i("PostureService", "Service stopped");
 		Toast.makeText(getApplicationContext(), "Service Stopped", Toast.LENGTH_SHORT).show(); 
-    	datasource.close();
+		
+		datasource.createRecord(String.valueOf(calibrated_angle) , MainActivity.events[3]);
+	    
+		datasource.close();
 	}
 
 
@@ -107,13 +116,26 @@ public class PostureService extends Service implements SensorListener{
         	         
         	        v.vibrate(300); 
         	        mp.start();
-                } 
+        	        
+        	        if (posture_state==true) {
+        	        	
+        	        	datasource.createRecord(String.valueOf(values[1]) , MainActivity.events[1]);
+        	    	    posture_state = false;
+        	        }
+                } else {
+                	if (posture_state==false) {
+                		
+                		datasource.createRecord(String.valueOf(values[1]) , MainActivity.events[2]);
+                	    posture_state = true;
+                	}
+                	
+                }
                 
                 
       
         }
             
-            datasource.createRecord(String.valueOf(values[1]),"EVENT");
+            
 	}
 	}
 	

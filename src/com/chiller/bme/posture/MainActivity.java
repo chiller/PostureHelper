@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.chiller.bme.posture.db.PostureSQLiteHelper;
 import com.chiller.bme.posture.db.SessionDAO;
 import com.chiller.bme.posture.db.SessionRecord;
 import com.chiller.bme.posture.tasks.AsyncTaskPostStats.UploadVoteCompleteListener;
@@ -21,6 +22,12 @@ public class MainActivity extends Activity implements UploadVoteCompleteListener
 	
 	public static int count;
 	public static float calibrated_angle;
+	public static String[] events = { 
+		"START",
+		"WARN",
+		"OK",
+		"STOP"};
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
