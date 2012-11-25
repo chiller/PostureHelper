@@ -12,7 +12,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.chiller.bme.posture.tasks.AsyncTaskPostStats;
+import com.chiller.bme.posture.db.SessionDAO;
+import com.chiller.bme.posture.db.SessionRecord;
 import com.chiller.bme.posture.tasks.AsyncTaskPostStats.UploadVoteCompleteListener;
 
 
@@ -83,6 +84,23 @@ public class MainActivity extends Activity implements UploadVoteCompleteListener
 		{
 			Intent settingsActivity = new Intent(this,PreferencesActivity.class);
 	        startActivity(settingsActivity);
+		} else if (item.getItemId() == R.id.clearDatabase) {
+			Log.i("PostureService", "Clearing database!");
+			SessionDAO datasource = new SessionDAO(this);
+		    datasource.open();
+		    datasource.deleteAllRecords();
+		    datasource.close();
+			
+		} else if (item.getItemId() == R.id.dumpDatabase) {
+			
+			SessionDAO datasource = new SessionDAO(this);
+		    datasource.open();
+		    for (SessionRecord r: datasource.getAllRecords()){
+		    	Log.i("PostureService",r.toString());
+		    	
+		    } 
+		    datasource.close();
+			
 		}
 		return super.onOptionsItemSelected(item);
 	}

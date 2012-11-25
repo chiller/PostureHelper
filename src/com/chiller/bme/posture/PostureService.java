@@ -58,11 +58,7 @@ public class PostureService extends Service implements SensorListener{
 		datasource = new SessionDAO(this);
 	    datasource.open();
 	    
-	    /*
-	    for (SessionRecord r: datasource.getAllRecords()){
-	    	Log.i("PostureService",r.toString());
-	    	
-	    } */
+
 	   
 		return START_STICKY;
 	}

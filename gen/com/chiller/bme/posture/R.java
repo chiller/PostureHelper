@@ -22,6 +22,8 @@ public final class R {
     public static final class id {
         public static final int button1=0x7f090000;
         public static final int button2=0x7f090001;
+        public static final int clearDatabase=0x7f09000a;
+        public static final int dumpDatabase=0x7f09000b;
         public static final int itemPreferences=0x7f090009;
         public static final int xbox=0x7f090003;
         public static final int xboxo=0x7f090007;
@@ -45,6 +47,8 @@ public final class R {
         public static final int alma=0x7f070002;
         public static final int app_name=0x7f070000;
         public static final int calibrate=0x7f070001;
+        public static final int clearDatabase=0x7f070004;
+        public static final int dumpDatabase=0x7f070005;
         public static final int itemPreferences=0x7f070003;
     }
     public static final class xml {

@@ -19,4 +19,6 @@
     <string name="calibrate">Calibrate</string>
     <string name="alma">alma</string>
     <string name="itemPreferences">Preferences</string>
+    <string name="clearDatabase">Clear database</string>
+    <string name="dumpDatabase">Dump database</string>
 </resources>

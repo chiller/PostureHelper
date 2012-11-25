@@ -27,7 +27,7 @@ public class SessionDAO {
   }
 
   public void close() {
-	Log.i("PostureService","DAO Closed");
+	Log.w("PostureService","DAO Closed");
     dbHelper.close();
   }
 
@@ -74,5 +74,10 @@ public class SessionDAO {
     comment.setId(cursor.getLong(0));
     comment.setComment(cursor.getString(1));
     return comment;
+  }
+
+  public void deleteAllRecords() {
+
+	  database.delete(PostureSQLiteHelper.TABLE_SESSIONS, null , null);
   }
 } 

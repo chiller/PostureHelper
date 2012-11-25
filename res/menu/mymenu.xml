@@ -2,4 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/itemPreferences"
           android:title="@string/itemPreferences"/>
+    <item android:id="@+id/clearDatabase"
+          android:title="@string/clearDatabase"/>
+    <item android:id="@+id/dumpDatabase"
+          android:title="@string/dumpDatabase"/>
 </menu>
