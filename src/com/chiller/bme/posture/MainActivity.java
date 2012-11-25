@@ -80,11 +80,18 @@ public class MainActivity extends Activity implements UploadVoteCompleteListener
 	      @Override
 	      public void onClick(View view) {
 	        
+	    	//Getting unsynced data to sync
+	    	
+	    	  Log.i("PostureService", "Clearing database!");
+			SessionDAO datasource = new SessionDAO(MainActivity.this);
+		    datasource.open();
+		    datasource.getUnsyncedJson();
+		    datasource.close();
+	    	  
 	    	AsyncTaskPostStats getImagesTask =
       	    new AsyncTaskPostStats(MainActivity.this, MainActivity.this);
       		getImagesTask.execute(
-      	    "http://vinyltentacles.appspot.com/"+
-      	    "?action=getImages"); 
+      	    "http://posturehelper.appspot.com/","test_post"); 
 	      
 	      }
 	    });

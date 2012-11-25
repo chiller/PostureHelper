@@ -6,7 +6,35 @@ public class SessionRecord {
 	  private String timestamp;
 	  private String event;
 	  private boolean synced;
-	  private String username;
+	  public String getUserid() {
+		return userid;
+	}
+
+	public void setUserid(String userid) {
+		this.userid = userid;
+	}
+
+	public boolean isSynced() {
+		return synced;
+	}
+
+	public void setSynced(boolean synced) {
+		this.synced = synced;
+	}
+
+	public String getTimestamp() {
+		return timestamp;
+	}
+
+	public String getEvent() {
+		return event;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	private String username;
 	  
 	  public long getId() {
 	    return id;

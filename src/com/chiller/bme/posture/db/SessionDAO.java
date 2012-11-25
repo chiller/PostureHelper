@@ -3,6 +3,10 @@ package com.chiller.bme.posture.db;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -94,8 +98,47 @@ public class SessionDAO {
     return record;
   }
 
-  public void deleteAllRecords() {
+  	public void deleteAllRecords() {
 
 	  database.delete(PostureSQLiteHelper.TABLE_SESSIONS, null , null);
-  }
+  	}
+
+  	public List<SessionRecord> getAllUnsynced() {
+	    List<SessionRecord> records = new ArrayList<SessionRecord>();
+
+	    Cursor cursor = database.query(PostureSQLiteHelper.TABLE_SESSIONS,
+	        allColumns, PostureSQLiteHelper.COLUMN_SYNCED + " = "+ "\"false\"", null, null, null, null);
+
+	    cursor.moveToFirst();
+	    while (!cursor.isAfterLast()) {
+	      SessionRecord record = cursorToRecord(cursor);
+	      records.add(record);
+	      cursor.moveToNext();
+	    }
+	    // Make sure to close the cursor
+	    cursor.close();
+	    return records;
+	  }
+  
+	public void getUnsyncedJson() {
+		// TODO Auto-generated method stub
+	  
+	  JSONArray results = new JSONArray();
+	  for (SessionRecord sr: getAllUnsynced()){
+		  JSONObject object = new JSONObject();
+		  try {
+		    object.put("id", sr.getId());
+		    object.put("data", sr.getRecord() );
+		    object.put("timestamp", sr.getTimestamp());
+		    object.put("event",  sr.getEvent());
+		    object.put("username", sr.getUsername());
+		    results.put(object);
+		  } catch (JSONException e) {
+		    e.printStackTrace();
+		  }
+		 } 
+	  Log.i("PostureService",results.toString());
+	  
+	  }
+	
 } 
