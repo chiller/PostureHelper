@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.chiller.bme.posture.db.SessionDAO;
 import com.chiller.bme.posture.db.SessionRecord;
@@ -82,16 +83,16 @@ public class MainActivity extends Activity implements UploadVoteCompleteListener
 	        
 	    	//Getting unsynced data to sync
 	    	
-	    	  Log.i("PostureService", "Clearing database!");
+	    	Log.i("PostureService", "Syncing!");
 			SessionDAO datasource = new SessionDAO(MainActivity.this);
 		    datasource.open();
-		    datasource.getUnsyncedJson();
+		    String data = datasource.getUnsyncedJson();
 		    datasource.close();
 	    	  
 	    	AsyncTaskPostStats getImagesTask =
       	    new AsyncTaskPostStats(MainActivity.this, MainActivity.this);
       		getImagesTask.execute(
-      	    "http://posturehelper.appspot.com/","test_post"); 
+      	    "http://posturehelper.appspot.com/",data); 
 	      
 	      }
 	    });
@@ -136,6 +137,11 @@ public class MainActivity extends Activity implements UploadVoteCompleteListener
 	public void onTaskComplete(String aResult) {
 		// TODO Auto-generated method stub
 		Log.i("PostureService", "AsyncTask Finished: " + aResult);
+		SessionDAO datasource = new SessionDAO(this);
+	    datasource.open();
+	    datasource.markAllRecords();
+	    datasource.close();
+	    Toast.makeText(MainActivity.this, "Sync Complete!", Toast.LENGTH_LONG).show();
 	}
 
 	@Override

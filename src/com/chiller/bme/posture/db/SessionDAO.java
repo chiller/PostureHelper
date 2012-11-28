@@ -120,7 +120,7 @@ public class SessionDAO {
 	    return records;
 	  }
   
-	public void getUnsyncedJson() {
+	public String getUnsyncedJson() {
 		// TODO Auto-generated method stub
 	  
 	  JSONArray results = new JSONArray();
@@ -138,7 +138,15 @@ public class SessionDAO {
 		  }
 		 } 
 	  Log.i("PostureService",results.toString());
-	  
+	  return results.toString();
 	  }
+
+	public void markAllRecords() {
+		// TODO Auto-generated method stub
+		String strFilter = "synced=\"false\"";
+		ContentValues args = new ContentValues();
+		args.put(PostureSQLiteHelper.COLUMN_SYNCED, "true");
+		database.update(PostureSQLiteHelper.TABLE_SESSIONS, args, strFilter, null);
+	}
 	
 } 
