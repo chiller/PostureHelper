@@ -10,6 +10,13 @@
 			        android:defaultValue="10"
 			        android:entries="@array/averageRange"
 			        android:entryValues="@array/averageRangeValues" />
+			<ListPreference
+			        android:title="Calibration Time"
+			        android:summary="Seconds needed to calibrate a stable angle"
+			        android:key="calibrationTime"
+			        android:defaultValue="4"
+			        android:entries="@array/calibrationTime"
+			        android:entryValues="@array/calibrationTimeValues" />
         </PreferenceCategory>
 
 </PreferenceScreen>
