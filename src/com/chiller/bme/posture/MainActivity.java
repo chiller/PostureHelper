@@ -21,7 +21,7 @@ import com.chiller.bme.posture.tasks.AsyncTaskPostStats.UploadVoteCompleteListen
 
 public class MainActivity extends Activity implements UploadVoteCompleteListener{
 	
-	public static int count;
+
 	public static float calibrated_angle;
 	public static String[] events = { 
 		"START",
@@ -33,7 +33,6 @@ public class MainActivity extends Activity implements UploadVoteCompleteListener
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState); 
-		count = 0;
 		calibrated_angle = 0;
 		
 		setContentView(R.layout.main);

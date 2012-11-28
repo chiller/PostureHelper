@@ -149,4 +149,6 @@ public class SessionDAO {
 		database.update(PostureSQLiteHelper.TABLE_SESSIONS, args, strFilter, null);
 	}
 	
+	
+	
 } 
