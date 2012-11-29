@@ -1,6 +1,7 @@
 package com.chiller.bme.posture.db;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -147,6 +148,49 @@ public class SessionDAO {
 		ContentValues args = new ContentValues();
 		args.put(PostureSQLiteHelper.COLUMN_SYNCED, "true");
 		database.update(PostureSQLiteHelper.TABLE_SESSIONS, args, strFilter, null);
+	}
+
+	public List<Integer> getStatsForUser(String string) {
+		// TODO Auto-generated method stub
+		String state;
+		int oksec = 0;
+		int warnsec = 0;
+		
+		Cursor cursor = database.query(PostureSQLiteHelper.TABLE_SESSIONS,
+		        allColumns, PostureSQLiteHelper.COLUMN_USER + " = \""+ string+ "\"", null, null, null, null);
+		cursor.moveToFirst();
+		state = "START";
+		SessionRecord previous = null;
+		while (!cursor.isAfterLast()) {
+		 
+			SessionRecord record = cursorToRecord(cursor);
+			   if(previous!=null){
+			       int delta = Integer.valueOf(record.getTimestamp()) - Integer.valueOf(previous.getTimestamp());
+				   Log.i("PostureService", record.getEvent() + previous.getEvent() 
+			    			+ String.valueOf(delta));
+			    	if((previous.getEvent().contentEquals("OK") && record.getEvent().contentEquals("WARN")) ||
+			    	(previous.getEvent().contentEquals("OK") && record.getEvent().contentEquals("STOP")))
+			    	
+			    	{
+			    		oksec+=delta;
+			    	} else if ((previous.getEvent().contentEquals("WARN") && record.getEvent().contentEquals("OK")) ||
+					    	(previous.getEvent().contentEquals("WARN") && record.getEvent().contentEquals("STOP")))
+			    	
+			    	{
+			    		warnsec+=delta;
+			    	}
+			   }  
+		    previous = record;  
+		    cursor.moveToNext();
+		}
+		// Make sure to close the cursor
+		cursor.close();
+		//This is code probably doesn't run well for large amounts of data. 
+		//Partial results should be saved for future queries.
+		List<Integer> results = new ArrayList<Integer>(); 
+		results.add(0, oksec);
+		results.add(1,warnsec);
+		return results;
 	}
 	
 	

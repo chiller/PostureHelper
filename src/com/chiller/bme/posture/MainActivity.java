@@ -2,6 +2,8 @@ package com.chiller.bme.posture;
 
 
 
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -92,6 +94,28 @@ public class MainActivity extends Activity implements UploadVoteCompleteListener
       	    new AsyncTaskPostStats(MainActivity.this, MainActivity.this);
       		getImagesTask.execute(
       	    "http://posturehelper.appspot.com/",data); 
+	      
+	      }
+	    });
+	    
+	    //Button4
+	    Button statsButton = (Button)findViewById(R.id.button4);
+
+	    statsButton.setOnClickListener(new View.OnClickListener() {
+
+	      @Override
+	      public void onClick(View view) {
+	        
+	    	//Getting unsynced data to sync
+	    	
+	    	SessionDAO datasource = new SessionDAO(MainActivity.this);
+		    datasource.open();
+		    List<Integer> data = datasource.getStatsForUser("Endre");
+		    datasource.close();
+		    
+	    	Toast.makeText(MainActivity.this, String.valueOf(data.get(0)), Toast.LENGTH_LONG).show(); 
+	    	Toast.makeText(MainActivity.this, String.valueOf(data.get(1)), Toast.LENGTH_LONG).show(); 
+	    	
 	      
 	      }
 	    });

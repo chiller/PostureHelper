@@ -23,4 +23,5 @@
     <string name="dumpDatabase">Dump database</string>
     <string name="stopservice">Stop Service</string>
     <string name="sync">Sync</string>
+    <string name="stats">Stats</string>
 </resources>
