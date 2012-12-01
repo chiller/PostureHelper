@@ -5,26 +5,29 @@ import java.text.DecimalFormat;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.SensorListener;
 import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Vibrator;
-import android.telephony.TelephonyManager;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.chiller.bme.posture.db.PostureSQLiteHelper;
 import com.chiller.bme.posture.db.SessionDAO;
-import com.chiller.bme.posture.db.SessionRecord;
 import com.chiller.bme.posture.util.MovingAverage;
 
+@SuppressWarnings("deprecation")
 public class PostureService extends Service implements SensorListener{
+	
 	private float calibrated_angle;
 	private SensorManager sm;
+	
+	//A MovingAverage instance is a queue that returns the average of latest samples
 	private MovingAverage average;
-	private int count;
+	//For alert sound
 	private MediaPlayer mp;
 	private boolean posture_state;
 	private SessionDAO datasource;
@@ -33,7 +36,6 @@ public class PostureService extends Service implements SensorListener{
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		// TODO Auto-generated method stub
 		
 		super.onStartCommand(intent, flags, startId);
 		
@@ -51,17 +53,16 @@ public class PostureService extends Service implements SensorListener{
                 SensorManager.SENSOR_DELAY_NORMAL);
 		
 		//Instantiate averaging algorithm
-		average = new MovingAverage(15);
-		count = 0;
-		
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String range = prefs.getString("averageRange", "");
+		average = new MovingAverage(Integer.valueOf(range));
 		//Instantiate sound player
 		mp = MediaPlayer.create(PostureService.this, R.raw.timbale);   
         
 		//Instantiate database
 		datasource = new SessionDAO(this);
 	    datasource.open();
-	    
-
+	    //Start session, record "START" event then "OK" event
 	    datasource.createRecord(String.valueOf(Extras.getFloat("calibrated_angle")) , MainActivity.events[0]);
 	    posture_state = true;
 	    datasource.createRecord(String.valueOf(Extras.getFloat("calibrated_angle")) , MainActivity.events[2]);
@@ -69,23 +70,17 @@ public class PostureService extends Service implements SensorListener{
 		return START_STICKY;
 	}
 
-	@Override
-	public IBinder onBind(Intent intent) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public void onDestroy() {
-		// TODO Auto-generated method stub
+		
 		sm.unregisterListener(this);
 		super.onDestroy();
 		mp.release();
 		Log.i("PostureService", "Service stopped");
 		Toast.makeText(getApplicationContext(), "Service Stopped", Toast.LENGTH_SHORT).show(); 
-		
-		datasource.createRecord(String.valueOf(calibrated_angle) , MainActivity.events[3]);
-	    
+		//Write STOP event to database
+		datasource.createRecord(String.valueOf(calibrated_angle) , MainActivity.events[3]);    
 		datasource.close();
 	}
 
@@ -93,7 +88,6 @@ public class PostureService extends Service implements SensorListener{
 
 	@Override
 	public void onAccuracyChanged(int sensor, int accuracy) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -104,6 +98,7 @@ public class PostureService extends Service implements SensorListener{
         	//Log.i("Orientation", String.valueOf(MainActivity.count));
         	
             if (sensor == SensorManager.SENSOR_ORIENTATION) {
+            	
             	average.push(values[1]);
                 
                 DecimalFormat twoDForm = new DecimalFormat("#");
@@ -137,6 +132,13 @@ public class PostureService extends Service implements SensorListener{
             
             
 	}
+	}
+
+
+	@Override
+	public IBinder onBind(Intent intent) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 

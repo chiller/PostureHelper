@@ -151,15 +151,12 @@ public class SessionDAO {
 	}
 
 	public List<Integer> getStatsForUser(String string) {
-		// TODO Auto-generated method stub
-		String state;
 		int oksec = 0;
 		int warnsec = 0;
 		
 		Cursor cursor = database.query(PostureSQLiteHelper.TABLE_SESSIONS,
 		        allColumns, PostureSQLiteHelper.COLUMN_USER + " = \""+ string+ "\"", null, null, null, null);
 		cursor.moveToFirst();
-		state = "START";
 		SessionRecord previous = null;
 		while (!cursor.isAfterLast()) {
 		 
@@ -184,6 +181,7 @@ public class SessionDAO {
 		    cursor.moveToNext();
 		}
 		
+		//Take active (not finished) state into consideration as well
 		if (previous.getEvent().contentEquals("OK")){
 			long tsLong = System.currentTimeMillis()/1000;
 		    Integer ts = (int)tsLong;

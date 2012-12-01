@@ -30,19 +30,6 @@ import com.chiller.bme.posture.tasks.AsyncTaskPostStats.UploadVoteCompleteListen
 
 public class MainActivity extends Activity implements UploadVoteCompleteListener{
 	
-
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-		if (started){
-		//View status = (View)findViewById(R.id.button4);
-		//StateFragment fragment = (StateFragment) getFragmentManager().findFragmentById(R.id.frag);
-		//fragment.getView().setBackgroundColor(Color.argb(255, 255, 255, 255));
-
-        }
-	}
-
 	public static float calibrated_angle;
 	public static String[] events = { 
 		"START",
@@ -102,7 +89,7 @@ public class MainActivity extends Activity implements UploadVoteCompleteListener
 	    });
 	    
 	    //Button4: Button to show stats
-	    Button statsButton = (Button)findViewById(R.id.button4);
+	    /*Button statsButton = (Button)findViewById(R.id.button4);
 	    statsButton.setOnClickListener(new View.OnClickListener() {
 
 	      @Override
@@ -115,7 +102,7 @@ public class MainActivity extends Activity implements UploadVoteCompleteListener
 	    	Toast.makeText(MainActivity.this, String.valueOf(data.get(0)), Toast.LENGTH_LONG).show(); 
 	    	Toast.makeText(MainActivity.this, String.valueOf(data.get(1)), Toast.LENGTH_LONG).show(); 	    		      
 	      }
-	    });	
+	    });	*/
 	}
 	
 	@Override
@@ -171,33 +158,36 @@ public class MainActivity extends Activity implements UploadVoteCompleteListener
 		Log.i("PostureService", "AsyncTask Finished with Error: "+ aError);
 	}
 	
-	public static class StateFragment extends Fragment {
+	//This fragment is in charge of displaying statistics about user's posture
+	//It is a nicely reusable part of the application, easily plugable into another activity's layout
+	public static class StatsFragment extends Fragment {
 
 		private Timer autoUpdate;
 
 		@Override
-		 public void onResume() {
+		public void onResume() {
 			super.onResume();
-		autoUpdate = new Timer();
-		  autoUpdate.schedule(new TimerTask() {
-		   @Override
-		   public void run() {
-		    StateFragment.this.getActivity().runOnUiThread(new Runnable() {
-		     public void run() {
-		      updateStats();
-		     }
-		    });
-		   }
-		  }, 0, 1000); // updates each 40 secs
+			autoUpdate = new Timer();
+			autoUpdate.schedule(new TimerTask() {
+		    @Override
+		    public void run() {
+		    	StatsFragment.this.getActivity().runOnUiThread(new Runnable() {
+		    		public void run() {
+		    			updateStats();
+		    		}
+		    	});
+		    }
+		  }, 0, 1000); // updates every second
 		 }
-
+		
+		//This method fetches the posture statistics from database
 		 private void updateStats(){
 			//Log.i("Posture Service","Periodical Lol");
-			TextView status = (TextView)StateFragment.this.getActivity().findViewById(R.id.statok);
-			TextView statuswarn = (TextView)StateFragment.this.getActivity().findViewById(R.id.statwarn);
-			ProgressBar progress = (ProgressBar)StateFragment.this.getActivity().findViewById(R.id.progressBar1);
+			TextView status = (TextView)StatsFragment.this.getActivity().findViewById(R.id.statok);
+			TextView statuswarn = (TextView)StatsFragment.this.getActivity().findViewById(R.id.statwarn);
+			ProgressBar progress = (ProgressBar)StatsFragment.this.getActivity().findViewById(R.id.progressBar1);
 			
-			SessionDAO datasource = new SessionDAO(StateFragment.this.getActivity());
+			SessionDAO datasource = new SessionDAO(StatsFragment.this.getActivity());
 		    datasource.open();
 		    List<Integer> data = datasource.getStatsForUser("Endre");
 		    datasource.close();		    
@@ -210,7 +200,7 @@ public class MainActivity extends Activity implements UploadVoteCompleteListener
 			
 			progress.setProgress((int)(100*dataok/(dataok+datawarn)));
 			
-			 }
+			}
 
 		 @Override
 		 public void onPause() {
@@ -222,9 +212,10 @@ public class MainActivity extends Activity implements UploadVoteCompleteListener
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-	        return inflater.inflate(R.layout.statefrag, container, false);
+	        return inflater.inflate(R.layout.statsfrag, container, false);
 		}
-
+		
+		//Simple tool for converting seconds to HH MM SS format
 		static String formatIntoHHMMSS(int secsIn)
 		{
 
