@@ -166,8 +166,8 @@ public class SessionDAO {
 			SessionRecord record = cursorToRecord(cursor);
 			   if(previous!=null){
 			       int delta = Integer.valueOf(record.getTimestamp()) - Integer.valueOf(previous.getTimestamp());
-				   Log.i("PostureService", record.getEvent() + previous.getEvent() 
-			    			+ String.valueOf(delta));
+				   //Log.i("PostureService", record.getEvent() + previous.getEvent() 
+			    	//		+ String.valueOf(delta));
 			    	if((previous.getEvent().contentEquals("OK") && record.getEvent().contentEquals("WARN")) ||
 			    	(previous.getEvent().contentEquals("OK") && record.getEvent().contentEquals("STOP")))
 			    	
@@ -183,11 +183,26 @@ public class SessionDAO {
 		    previous = record;  
 		    cursor.moveToNext();
 		}
+		
+		if (previous.getEvent().contentEquals("OK")){
+			long tsLong = System.currentTimeMillis()/1000;
+		    Integer ts = (int)tsLong;
+			int delta = ts - Integer.valueOf(previous.getTimestamp()) ;
+			  oksec+=delta; 
+		} else if (previous.getEvent().contentEquals("WARN")){
+			long tsLong = System.currentTimeMillis()/1000;
+		    Integer ts = (int)tsLong;
+			int delta = ts - Integer.valueOf(previous.getTimestamp()) ;
+			  warnsec+=delta; 
+		}
 		// Make sure to close the cursor
 		cursor.close();
 		//This is code probably doesn't run well for large amounts of data. 
 		//Partial results should be saved for future queries.
 		List<Integer> results = new ArrayList<Integer>(); 
+		
+	
+		
 		results.add(0, oksec);
 		results.add(1,warnsec);
 		return results;
