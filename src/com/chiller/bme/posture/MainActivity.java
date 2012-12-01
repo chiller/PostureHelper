@@ -3,16 +3,23 @@ package com.chiller.bme.posture;
 
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chiller.bme.posture.db.SessionDAO;
@@ -24,12 +31,27 @@ import com.chiller.bme.posture.tasks.AsyncTaskPostStats.UploadVoteCompleteListen
 public class MainActivity extends Activity implements UploadVoteCompleteListener{
 	
 
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		if (started){
+		//View status = (View)findViewById(R.id.button4);
+		//StateFragment fragment = (StateFragment) getFragmentManager().findFragmentById(R.id.frag);
+		//fragment.getView().setBackgroundColor(Color.argb(255, 255, 255, 255));
+
+        }
+	}
+
 	public static float calibrated_angle;
 	public static String[] events = { 
 		"START",
 		"WARN",
 		"OK",
 		"STOP"};
+	
+	//This bool helps make sure the service isn't started twice
+    public static boolean started;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,87 +61,61 @@ public class MainActivity extends Activity implements UploadVoteCompleteListener
 		
 		setContentView(R.layout.main);
 
-		//Button1
-	    Button orderButton = (Button)findViewById(R.id.button1);
-
-	    orderButton.setOnClickListener(new View.OnClickListener() {
-
+		//Button1: Calibrate button, launches Calibration Activity
+	    Button calibrateButton = (Button)findViewById(R.id.button1);
+	    calibrateButton.setOnClickListener(new View.OnClickListener() {
 	      @Override
 	      public void onClick(View view) {
 	        Intent intent = new Intent(MainActivity.this, CalibrationActivity.class);
 	        startActivity(intent);
 	      }
-
-	      
-	    
 	    });
 
-	    //Button2
-	    Button orderButton2 = (Button)findViewById(R.id.button2);
-
-	    orderButton2.setOnClickListener(new View.OnClickListener() {
-
+	    //Button2: Stop service button. Stops the running sensor service.
+	    Button serviceButton = (Button)findViewById(R.id.button2);
+	    serviceButton.setOnClickListener(new View.OnClickListener() {
 	      @Override
-	      public void onClick(View view) {
-	        
-	        
+	      public void onClick(View view) {	        	        
 	        Intent intent = new Intent(MainActivity.this, PostureService.class);
-	        getApplicationContext().stopService(intent);
-	        
-	        
-	        
-	       
-	        
-	        
+	        getApplicationContext().stopService(intent);	
+	        MainActivity.started = false;
 	      }
 	    });
 	    
-	    //Button3
+	    //Button3: Button to trigger sync database to server
 	    Button syncButton = (Button)findViewById(R.id.button3);
-
 	    syncButton.setOnClickListener(new View.OnClickListener() {
-
 	      @Override
-	      public void onClick(View view) {
-	        
-	    	//Getting unsynced data to sync
-	    	
+	      public void onClick(View view) {	        
+	    	//Getting unsynced data to sync	    	
 	    	Log.i("PostureService", "Syncing!");
 			SessionDAO datasource = new SessionDAO(MainActivity.this);
 		    datasource.open();
 		    String data = datasource.getUnsyncedJson();
 		    datasource.close();
-	    	  
+	    	//Send data to backend via asynctask  
 	    	AsyncTaskPostStats getImagesTask =
       	    new AsyncTaskPostStats(MainActivity.this, MainActivity.this);
       		getImagesTask.execute(
-      	    "http://posturehelper.appspot.com/",data); 
-	      
+      	    "http://posturehelper.appspot.com/",data); 	      
 	      }
 	    });
 	    
-	    //Button4
+	    //Button4: Button to show stats
 	    Button statsButton = (Button)findViewById(R.id.button4);
-
 	    statsButton.setOnClickListener(new View.OnClickListener() {
 
 	      @Override
-	      public void onClick(View view) {
-	        
-	    	//Getting unsynced data to sync
-	    	
+	      public void onClick(View view) {	        
+	    	//Getting unsynced data to sync	    	
 	    	SessionDAO datasource = new SessionDAO(MainActivity.this);
 		    datasource.open();
 		    List<Integer> data = datasource.getStatsForUser("Endre");
-		    datasource.close();
-		    
+		    datasource.close();		    
 	    	Toast.makeText(MainActivity.this, String.valueOf(data.get(0)), Toast.LENGTH_LONG).show(); 
-	    	Toast.makeText(MainActivity.this, String.valueOf(data.get(1)), Toast.LENGTH_LONG).show(); 
-	    	
-	      
+	    	Toast.makeText(MainActivity.this, String.valueOf(data.get(1)), Toast.LENGTH_LONG).show(); 	    		      
 	      }
-	    });
-	
+	    });	
 	}
 	
 	@Override
@@ -131,11 +127,14 @@ public class MainActivity extends Activity implements UploadVoteCompleteListener
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		
 		if (item.getItemId() == R.id.itemPreferences)
 		{
+			//Set some preferences that influence calibration and alerts
 			Intent settingsActivity = new Intent(this,PreferencesActivity.class);
 	        startActivity(settingsActivity);
 		} else if (item.getItemId() == R.id.clearDatabase) {
+			//Clear sqlite database
 			Log.i("PostureService", "Clearing database!");
 			SessionDAO datasource = new SessionDAO(this);
 		    datasource.open();
@@ -143,22 +142,22 @@ public class MainActivity extends Activity implements UploadVoteCompleteListener
 		    datasource.close();
 			
 		} else if (item.getItemId() == R.id.dumpDatabase) {
-			
+			//Dump database to logs
 			SessionDAO datasource = new SessionDAO(this);
 		    datasource.open();
 		    for (SessionRecord r: datasource.getAllRecords()){
-		    	Log.i("PostureService",r.toString());
-		    	
+		    	Log.i("PostureService",r.toString());		    	
 		    } 
-		    datasource.close();
-			
+		    datasource.close();			
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
 	public void onTaskComplete(String aResult) {
-		// TODO Auto-generated method stub
+		// Handler for completed asynctask that sends database to backend
+		// On complete all records should be marked synced
+		// TODO: only mark those that have ben synced, new ones might have been added
 		Log.i("PostureService", "AsyncTask Finished: " + aResult);
 		SessionDAO datasource = new SessionDAO(this);
 	    datasource.open();
@@ -169,8 +168,76 @@ public class MainActivity extends Activity implements UploadVoteCompleteListener
 
 	@Override
 	public void onError(String aError) {
-		// TODO Auto-generated method stub
 		Log.i("PostureService", "AsyncTask Finished with Error: "+ aError);
 	}
+	
+	public static class StateFragment extends Fragment {
 
+		private Timer autoUpdate;
+
+		@Override
+		 public void onResume() {
+			super.onResume();
+		autoUpdate = new Timer();
+		  autoUpdate.schedule(new TimerTask() {
+		   @Override
+		   public void run() {
+		    StateFragment.this.getActivity().runOnUiThread(new Runnable() {
+		     public void run() {
+		      updateStats();
+		     }
+		    });
+		   }
+		  }, 0, 1000); // updates each 40 secs
+		 }
+
+		 private void updateStats(){
+			//Log.i("Posture Service","Periodical Lol");
+			TextView status = (TextView)StateFragment.this.getActivity().findViewById(R.id.statok);
+			TextView statuswarn = (TextView)StateFragment.this.getActivity().findViewById(R.id.statwarn);
+			ProgressBar progress = (ProgressBar)StateFragment.this.getActivity().findViewById(R.id.progressBar1);
+			
+			SessionDAO datasource = new SessionDAO(StateFragment.this.getActivity());
+		    datasource.open();
+		    List<Integer> data = datasource.getStatsForUser("Endre");
+		    datasource.close();		    
+		    
+		   
+			status.setText( formatIntoHHMMSS(data.get(0)));
+			statuswarn.setText( formatIntoHHMMSS(data.get(1)));
+			float dataok = (float)(data.get(0));
+			float datawarn = (float)(data.get(1));
+			
+			progress.setProgress((int)(100*dataok/(dataok+datawarn)));
+			
+			 }
+
+		 @Override
+		 public void onPause() {
+		  autoUpdate.cancel();
+		  super.onPause();
+		 }
+		
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+	        return inflater.inflate(R.layout.statefrag, container, false);
+		}
+
+		static String formatIntoHHMMSS(int secsIn)
+		{
+
+			int hours = secsIn / 3600,
+			remainder = secsIn % 3600,
+			minutes = remainder / 60,
+			seconds = remainder % 60;
+	
+			return ( (hours < 10 ? "0" : "") + hours
+			+ ":" + (minutes < 10 ? "0" : "") + minutes
+			+ ":" + (seconds< 10 ? "0" : "") + seconds );
+
+		}
+
+	}
 }

@@ -5,12 +5,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.hardware.SensorListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.chiller.bme.posture.util.MovingAverage;
@@ -38,8 +40,7 @@ public class CalibrationActivity extends Activity implements SensorListener {
     //if enough time passes this is the value the service is called with
     private float current_calibrated_angle;
     
-	//This bool helps make sure the service isn't started twice
-    private boolean started;
+	
 
     /** Called when the activity is first created. */
     @Override
@@ -69,7 +70,7 @@ public class CalibrationActivity extends Activity implements SensorListener {
         average = new MovingAverage(samplecount);
         lastchange = System.currentTimeMillis();
         current_calibrated_angle = 0;
-        started = false;
+        MainActivity.started = false;
     }
     
     
@@ -100,14 +101,16 @@ public class CalibrationActivity extends Activity implements SensorListener {
                 	Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         	        v.vibrate(300); 
         	        
-        	        if (!started){
+        	        if (!MainActivity.started){
         	        
         	        	Intent serviceintent = new Intent(getApplicationContext(), PostureService.class);
         	        	serviceintent.putExtra("calibrated_angle", current_calibrated_angle);
         	        	this.getApplicationContext().startService(serviceintent);
-        	        	started = true;
+        	        	MainActivity.started = true;
+        	        	
         	        }
         	        finish();
+        	        
         	        
                 }
                  

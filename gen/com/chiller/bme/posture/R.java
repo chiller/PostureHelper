@@ -22,42 +22,51 @@ public final class R {
         public static final int wood=0x7f020002;
     }
     public static final class id {
-        public static final int button1=0x7f090000;
-        public static final int button2=0x7f090001;
-        public static final int button3=0x7f090002;
-        public static final int button4=0x7f090003;
-        public static final int clearDatabase=0x7f09000c;
-        public static final int dumpDatabase=0x7f09000d;
-        public static final int itemPreferences=0x7f09000b;
-        public static final int xbox=0x7f090005;
-        public static final int xboxo=0x7f090009;
-        public static final int ybox=0x7f090004;
-        public static final int yboxo=0x7f090007;
-        public static final int yboxoavg=0x7f090008;
-        public static final int zbox=0x7f090006;
-        public static final int zboxo=0x7f09000a;
+        public static final int button1=0x7f0a0000;
+        public static final int button2=0x7f0a0001;
+        public static final int button3=0x7f0a0002;
+        public static final int button4=0x7f0a0003;
+        public static final int clearDatabase=0x7f0a0011;
+        public static final int dumpDatabase=0x7f0a0012;
+        public static final int frag=0x7f0a0004;
+        public static final int fraglayout=0x7f0a000c;
+        public static final int itemPreferences=0x7f0a0010;
+        public static final int progressBar1=0x7f0a000f;
+        public static final int statok=0x7f0a000d;
+        public static final int statwarn=0x7f0a000e;
+        public static final int xbox=0x7f0a0006;
+        public static final int xboxo=0x7f0a000a;
+        public static final int ybox=0x7f0a0005;
+        public static final int yboxo=0x7f0a0008;
+        public static final int yboxoavg=0x7f0a0009;
+        public static final int zbox=0x7f0a0007;
+        public static final int zboxo=0x7f0a000b;
+    }
+    public static final class integer {
+        public static final int rowcount=0x7f070000;
     }
     public static final class layout {
         public static final int main=0x7f030000;
         public static final int orientation=0x7f030001;
-        public static final int stats=0x7f030002;
+        public static final int statefrag=0x7f030002;
+        public static final int stats=0x7f030003;
     }
     public static final class menu {
-        public static final int mymenu=0x7f080000;
+        public static final int mymenu=0x7f090000;
     }
     public static final class raw {
         public static final int timbale=0x7f050000;
     }
     public static final class string {
-        public static final int alma=0x7f070002;
-        public static final int app_name=0x7f070000;
-        public static final int calibrate=0x7f070001;
-        public static final int clearDatabase=0x7f070004;
-        public static final int dumpDatabase=0x7f070005;
-        public static final int itemPreferences=0x7f070003;
-        public static final int stats=0x7f070008;
-        public static final int stopservice=0x7f070006;
-        public static final int sync=0x7f070007;
+        public static final int alma=0x7f080002;
+        public static final int app_name=0x7f080000;
+        public static final int calibrate=0x7f080001;
+        public static final int clearDatabase=0x7f080004;
+        public static final int dumpDatabase=0x7f080005;
+        public static final int itemPreferences=0x7f080003;
+        public static final int stats=0x7f080008;
+        public static final int stopservice=0x7f080006;
+        public static final int sync=0x7f080007;
     }
     public static final class xml {
         public static final int preferences=0x7f040000;
