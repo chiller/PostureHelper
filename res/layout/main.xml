@@ -2,13 +2,14 @@
     <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:columnCount="2" >
+        android:columnCount="3" >
 
         <Button
             android:id="@+id/button1"
             android:layout_width="275dp"
             android:layout_height="84dp"
             android:layout_column="1"
+            android:layout_columnSpan="2"
             android:layout_gravity="left"
             android:layout_row="1"
             android:text="@string/calibrate" />
@@ -21,8 +22,8 @@
             android:layout_gravity="left"
             android:layout_row="2"
             android:text="@string/stopservice" />
-
-        <Button
+        
+          <Button
             android:id="@+id/button3"
             android:layout_width="275dp"
             android:layout_height="84dp"
@@ -30,15 +31,18 @@
             android:layout_gravity="left"
             android:layout_row="3"
             android:text="@string/sync" />
+          
 
-        <fragment
-            android:id="@+id/frag"
-            android:layout_width="275dp"
+           
+          <fragment class="com.chiller.bme.posture.MainActivity$StatsFragment"
+		   android:id="@+id/frag"
+		   android:layout_width="275dp"
             android:layout_height="84dp"
-            android:layout_column="1"
+             android:layout_column="1"
             android:layout_gravity="left"
             android:layout_row="4"
-            class="com.chiller.bme.posture.MainActivity$StateFragment" />
+            android:padding="60dp"
+             />
 
         <Space
             android:layout_width="21dp"
@@ -51,10 +55,5 @@
             android:layout_height="21dp"
             android:layout_column="0"
             android:layout_row="0" />
-
-        <Space
-            android:layout_width="100dp"
-            android:layout_height="84dp"
-            android:layout_row="4" />
 
     </GridLayout>

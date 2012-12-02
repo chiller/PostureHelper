@@ -25,10 +25,10 @@ import android.widget.Toast;
 import com.chiller.bme.posture.db.SessionDAO;
 import com.chiller.bme.posture.db.SessionRecord;
 import com.chiller.bme.posture.tasks.AsyncTaskPostStats;
-import com.chiller.bme.posture.tasks.AsyncTaskPostStats.UploadVoteCompleteListener;
+import com.chiller.bme.posture.tasks.AsyncTaskPostStats.UploadStatsCompleteListener;
 
 
-public class MainActivity extends Activity implements UploadVoteCompleteListener{
+public class MainActivity extends Activity implements UploadStatsCompleteListener{
 	
 	public static float calibrated_angle;
 	public static String[] events = { 

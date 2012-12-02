@@ -21,17 +21,17 @@ import android.os.AsyncTask;
 
 public class AsyncTaskPostStats extends AsyncTask<String, Void, String> {
 
-	public interface UploadVoteCompleteListener {
+	public interface UploadStatsCompleteListener {
 		   public void onTaskComplete(String aResult);
 		   public void onError(String aError);
 	}
 	
 	private Context context = null;
 	private ProgressDialog progressDialog = null;
-	private UploadVoteCompleteListener listener;
+	private UploadStatsCompleteListener listener;
 	private String error = null;
 
-	public AsyncTaskPostStats(Context context, UploadVoteCompleteListener aListener) {
+	public AsyncTaskPostStats(Context context, UploadStatsCompleteListener aListener) {
 	    this.context = context; 
 	    listener = aListener;
 	}
@@ -39,7 +39,7 @@ public class AsyncTaskPostStats extends AsyncTask<String, Void, String> {
 	@Override
 	protected void onPreExecute() {
 		progressDialog = new ProgressDialog(this.context);
-	    progressDialog.setMessage("Kérem várjon...");
+	    progressDialog.setMessage("Please wait...");
 	    progressDialog.show();
 	}
 	
